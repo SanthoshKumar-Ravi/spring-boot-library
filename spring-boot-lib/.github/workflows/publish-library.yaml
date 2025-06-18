@@ -1,0 +1,78 @@
+name: Publish package to GitHub Packages
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        type: choice
+        description: New version type
+        required: true
+        options:
+          - MINOR
+          - MAJOR
+        default: MINOR
+
+jobs:
+
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: maven
+          server-id: github
+
+      - name: Publish package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mvn deploy -B -am
+
+      - name: Get current version
+        run: |
+          CUR_VERSION=$(mvn -f pom.xml -B help:evaluate -Dexpression=project.version -q -DforceStdout -pl :bsf-web-services)
+          CUR_BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "Current branch is '${CUR_BRANCH}' and version '${CUR_VERSION}'"
+          echo "CUR_VERSION=${CUR_VERSION}" >> $GITHUB_ENV
+          echo "CUR_BRANCH=${CUR_BRANCH}" >> $GITHUB_ENV          
+
+      - name: Create new version
+        run: |
+          if [ "${{ github.event.inputs.version_type }}" == "MAJOR" ]; then 
+            VERSION_SCHEME="\${parsedVersion.nextMajorVersion}.0.0"
+            echo "Incrementing MAJOR version"
+          else
+            VERSION_SCHEME="\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0"
+            echo "Incrementing MINOR version"
+          fi
+          mvn -f pom.xml -B build-helper:parse-version versions:set -DnewVersion="${VERSION_SCHEME}" -amd -pl :bsf-web-services
+          NEXT_VERSION=$(mvn -f pom.xml -B help:evaluate -Dexpression=project.version -q -DforceStdout -pl :bsf-web-services)
+          echo "Next version is: ${NEXT_VERSION}"
+          echo "NEXT_VERSION=${NEXT_VERSION}" >> $GITHUB_ENV
+          echo "NEW_BRANCH=release/${NEXT_VERSION}" >> $GITHUB_ENV
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: "CI Increment Version from '${{ env.CUR_VERSION }}' to '${{ env.NEXT_VERSION }}'"
+          title: "CI Increment Version from '${{ env.CUR_VERSION }}' to '${{ env.NEXT_VERSION }}'"
+          body: ''
+          committer: 'github-bot'
+          labels: automerge-lib
+          author:  'github-bot'
+          branch: ${{ env.NEW_BRANCH }}
+          token: ${{ secrets.GH_PAT }}
+          add-paths: |
+            pom.xml
+            **/pom.xml
