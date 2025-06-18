@@ -40,7 +40,7 @@ jobs:
 
       - name: Get current version
         run: |
-          CUR_VERSION=$(mvn -f pom.xml -B help:evaluate -Dexpression=project.version -q -DforceStdout -pl :bsf-web-services)
+          CUR_VERSION=$(mvn -f pom.xml -B help:evaluate -Dexpression=project.version -q -DforceStdout -pl :spring-boot-library)
           CUR_BRANCH="${GITHUB_REF#refs/heads/}"
           echo "Current branch is '${CUR_BRANCH}' and version '${CUR_VERSION}'"
           echo "CUR_VERSION=${CUR_VERSION}" >> $GITHUB_ENV
@@ -55,8 +55,8 @@ jobs:
             VERSION_SCHEME="\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0"
             echo "Incrementing MINOR version"
           fi
-          mvn -f pom.xml -B build-helper:parse-version versions:set -DnewVersion="${VERSION_SCHEME}" -amd -pl :bsf-web-services
-          NEXT_VERSION=$(mvn -f pom.xml -B help:evaluate -Dexpression=project.version -q -DforceStdout -pl :bsf-web-services)
+          mvn -f pom.xml -B build-helper:parse-version versions:set -DnewVersion="${VERSION_SCHEME}" -amd -pl :spring-boot-library
+          NEXT_VERSION=$(mvn -f pom.xml -B help:evaluate -Dexpression=project.version -q -DforceStdout -pl :spring-boot-library)
           echo "Next version is: ${NEXT_VERSION}"
           echo "NEXT_VERSION=${NEXT_VERSION}" >> $GITHUB_ENV
           echo "NEW_BRANCH=release/${NEXT_VERSION}" >> $GITHUB_ENV
