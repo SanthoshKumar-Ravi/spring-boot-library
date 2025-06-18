@@ -1,0 +1,38 @@
+name: "DEV - Auto-merge CI/CD"
+
+on:
+  pull_request:
+    types:
+      - labeled
+    branches:
+      - master
+    paths:
+      - "pom.xml"
+      - "**/pom.xml"
+
+concurrency:
+  group: automerge-lib
+  cancel-in-progress: false
+
+jobs:
+
+  auto-merge:
+
+    name: Auto Merge Pull Request
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.head_ref, 'release/') && startsWith(github.event.label.name, 'automerge-lib') }}
+
+    steps:
+
+      - name: Checkout GitOps Repo
+        uses: actions/checkout@v3
+        with:
+          ref: master
+
+      - name: Approve and Merge PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Trying to approve and merge the PR number: ${{ github.event.pull_request.number }}"
+          gh pr review "${{ github.event.pull_request.number }}" -a
+          gh pr merge "${{ github.event.pull_request.number }}" -s -d

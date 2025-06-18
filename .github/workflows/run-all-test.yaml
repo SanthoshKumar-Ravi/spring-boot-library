@@ -1,0 +1,32 @@
+name: Run Test
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - biztalk-client/**
+      - tuxedo-client/**
+      - transfers/**
+      - pom.xml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test
+    if: ${{ github.event_name == 'workflow_dispatch' || github.actor != 'ava-cicd' }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: maven
+      - name: Run Tests
+        run: mvn clean verify
