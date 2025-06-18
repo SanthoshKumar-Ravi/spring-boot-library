@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
     <groupId>com.spring</groupId>
-    <artifactId>spring-boot-libary</artifactId>
+    <artifactId>spring-boot-library</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
@@ -24,5 +24,19 @@
         <module>string-lib</module>
         <module>integer-lib</module>
     </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>AVA GitHub Packages</name>
+            <url>https://maven.pkg.github.com/SanthoshKumar-Ravi//spring-boot-library</url>
+        </repository>
+    </distributionManagement>
+
+    <!--<scm>
+        <developerConnection>
+            scm:git:git@github.com:AvaBank/bsf-web-services.git
+        </developerConnection>
+    </scm>-->
 
 </project>
