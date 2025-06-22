@@ -49,11 +49,11 @@ Choose either:
 
 #### The pipeline will:
 
-  Deploy the updated libraries.
+  * Deploy the updated libraries.
 
-  Increment the version.
+  * Increment the version.
 
-  Create a new pull request with version changes.
+  * Create a new pull request with version changes.
 
 Once the PR is merged, the new version will be available on GitHub Packages.
 
@@ -61,8 +61,8 @@ Once the PR is merged, the new version will be available on GitHub Packages.
 
 
 ### 🧪 Notes
-This workflow uses the Maven build-helper and versions plugins to parse and update project versions.
+1. This workflow uses the Maven build-helper and versions plugins to parse and update project versions.
 
-All published packages will be available under the GitHub Packages section of this repository.
+2. All published packages will be available under the GitHub Packages section of this repository.
 
-You must have a valid GH_PAT and GITHUB_TOKEN configured in the repository secrets for this workflow to function correctly.
+3. You must have a valid GH_PAT and GITHUB_TOKEN configured in the repository secrets for this workflow to function correctly.
