@@ -5,7 +5,7 @@ string-lib – Utilities and helpers for string manipulation
 
 integer-lib – Utilities for integer operations
 
-open-api-lib – Centralized OpenAPI specifications for integration with services
+open-api-spec – Centralized OpenAPI specifications for integration with services
 
 To streamline versioning and publishing, this repository includes a GitHub Actions workflow to automate publishing packages to GitHub Packages.
 
