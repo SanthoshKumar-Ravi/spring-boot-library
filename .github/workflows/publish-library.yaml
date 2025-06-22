@@ -75,9 +75,9 @@ jobs:
           commit-message: "CI Increment Version from '${{ env.CUR_VERSION }}' to '${{ env.NEXT_VERSION }}'"
           title: "CI Increment Version from '${{ env.CUR_VERSION }}' to '${{ env.NEXT_VERSION }}'"
           body: ''
-          committer: 'github-bot <krpsanthoshkumar@gmail.com>'
+          committer: "GitHub Actions [Bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           labels: merge-lib
-          author:  'github-bot <krpsanthoshkumar@gmail.com>'
+          author: "GitHub Actions [Bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           branch: ${{ env.NEW_BRANCH }}
           token: ${{ secrets.GH_PAT }}
           add-paths: |
