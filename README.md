@@ -66,3 +66,30 @@ Once the PR is merged, the new version will be available on GitHub Packages.
 2. All published packages will be available under the GitHub Packages section of this repository.
 
 3. You must have a valid GH_PAT and GITHUB_TOKEN configured in the repository secrets for this workflow to function correctly.
+
+
+## How to add the library in your application
+1. Goto github packages page,
+<img width="1651" alt="image" src="https://github.com/user-attachments/assets/c30a9e71-3919-4f7a-b3cc-789ba0b6f867" />
+
+2. Select the lib which you want to add. You will find the dependencies tag,
+<img width="1644" alt="image" src="https://github.com/user-attachments/assets/618dfed9-0304-4129-9221-f4b459889214" />
+
+3. Add the dependency in your application.
+
+4. Configure the repository element in your .m2 file to downlaod the libaries published.
+```
+<repositories>
+                <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/SanthoshKumar-Ravi/spring-boot-library</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                  </releases>
+                </repository>
+            </repositories>
+```
+   
