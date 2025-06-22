@@ -62,7 +62,7 @@ jobs:
             VERSION_SCHEME="\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0"
             echo "Incrementing MINOR version"
           fi
-          mvn -f pom.xml -B build-helper:parse-version versions:set -DnewVersion="${VERSION_SCHEME}" -amd -pl spring-boot-library
+          mvn -f pom.xml -B build-helper:parse-version versions:set -DnewVersion="${VERSION_SCHEME}" -amd -pl :spring-boot-library
           NEXT_VERSION=$(mvn -f pom.xml -B help:evaluate -Dexpression=project.version -q -DforceStdout -pl :spring-boot-library)
           echo "Next version is: ${NEXT_VERSION}"
           echo "NEXT_VERSION=${NEXT_VERSION}" >> $GITHUB_ENV
