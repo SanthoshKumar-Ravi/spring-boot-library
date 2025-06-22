@@ -10,6 +10,14 @@ on:
           - MINOR
           - MAJOR
         default: MINOR
+      lib_name:
+        type: choice
+        description: Select the library to build
+        required: true
+        options:
+          - integer-lib
+          - string-lib
+          - open-api-spec
 
 jobs:
   publish:
@@ -35,11 +43,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mvn deploy -B -am
+          mvn deploy -B -am -pl :"${{ github.event.inputs.lib_name }}"
 
       - name: Get current version
         run: |
-          CUR_VERSION=$(mvn -f pom.xml -B help:evaluate -Dexpression=project.version -q -DforceStdout -pl :spring-boot-library)
+          CUR_VERSION=$(mvn -f pom.xml -B help:evaluate -Dexpression=project.version -q -DforceStdout -pl :"${{ github.event.inputs.lib_name }}")
           CUR_BRANCH="${GITHUB_REF#refs/heads/}"
           echo "Current branch is '${CUR_BRANCH}' and version '${CUR_VERSION}'"
           echo "CUR_VERSION=${CUR_VERSION}" >> $GITHUB_ENV
@@ -54,8 +62,8 @@ jobs:
             VERSION_SCHEME="\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0"
             echo "Incrementing MINOR version"
           fi
-          mvn -f pom.xml -B build-helper:parse-version versions:set -DnewVersion="${VERSION_SCHEME}" -amd -pl :spring-boot-library
-          NEXT_VERSION=$(mvn -f pom.xml -B help:evaluate -Dexpression=project.version -q -DforceStdout -pl :spring-boot-library)
+          mvn -f pom.xml -B build-helper:parse-version versions:set -DnewVersion="${VERSION_SCHEME}" -amd -pl "${{ github.event.inputs.lib_name }}"
+          NEXT_VERSION=$(mvn -f pom.xml -B help:evaluate -Dexpression=project.version -q -DforceStdout -pl :"${{ github.event.inputs.lib_name }}")
           echo "Next version is: ${NEXT_VERSION}"
           echo "NEXT_VERSION=${NEXT_VERSION}" >> $GITHUB_ENV
           echo "NEW_BRANCH=release/${NEXT_VERSION}" >> $GITHUB_ENV
@@ -67,9 +75,9 @@ jobs:
           commit-message: "CI Increment Version from '${{ env.CUR_VERSION }}' to '${{ env.NEXT_VERSION }}'"
           title: "CI Increment Version from '${{ env.CUR_VERSION }}' to '${{ env.NEXT_VERSION }}'"
           body: ''
-          committer: 'bsf-bot <bsf@bsfdv.com>'
-          labels: automerge-lib
-          author:  'bsf-bot <bsf@bsfdv.com>'
+          committer: 'github-bot'
+          labels: merge-lib
+          author:  'github-bot'
           branch: ${{ env.NEW_BRANCH }}
           token: ${{ secrets.GH_PAT }}
           add-paths: |

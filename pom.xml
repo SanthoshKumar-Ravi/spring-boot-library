@@ -23,6 +23,7 @@
     <modules>
         <module>string-lib</module>
         <module>integer-lib</module>
+        <module>open-api-spec</module>
     </modules>
 
     <distributionManagement>
