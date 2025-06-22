@@ -29,7 +29,7 @@
     <distributionManagement>
         <repository>
             <id>github</id>
-            <name>AVA GitHub Packages</name>
+            <name>SanthoshKumar-Ravi GitHub Packages</name>
             <url>https://maven.pkg.github.com/SanthoshKumar-Ravi/spring-boot-library</url>
         </repository>
     </distributionManagement>
